@@ -67,6 +67,9 @@
     <PackageReference Include="Dapper">
       <Version>1.50.5</Version>
     </PackageReference>
+    <PackageReference Include="ILRepack.Lib.MSBuild.Task">
+      <Version>2.0.16</Version>
+    </PackageReference>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils">
       <Version>2.2.5</Version>
     </PackageReference>
