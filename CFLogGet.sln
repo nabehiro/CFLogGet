@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2041
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CFLogGet", "CFLogGet\CFLogGet.csproj", "{E181D3C4-9FFF-48AD-B51A-47CE2ED6D34A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CFLogGet.Tests", "CFLogGet.Tests\CFLogGet.Tests.csproj", "{50907191-C666-443B-95F7-9199817A7958}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E181D3C4-9FFF-48AD-B51A-47CE2ED6D34A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E181D3C4-9FFF-48AD-B51A-47CE2ED6D34A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E181D3C4-9FFF-48AD-B51A-47CE2ED6D34A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E181D3C4-9FFF-48AD-B51A-47CE2ED6D34A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50907191-C666-443B-95F7-9199817A7958}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50907191-C666-443B-95F7-9199817A7958}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50907191-C666-443B-95F7-9199817A7958}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50907191-C666-443B-95F7-9199817A7958}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6AC86CDF-E10F-4EF8-AC5B-1862C22DC70A}
+	EndGlobalSection
+EndGlobal
