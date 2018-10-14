@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -65,13 +66,12 @@ namespace CFLogGet
 
             Task.WhenAll(items.Select(async (item, idx) =>
             {
-                Console.WriteLine($"[START] {idx}:{item.Key}");
+                Console.WriteLine($"{idx}:{item.Key}");
                 await ExecuteItem(item);
-                Console.WriteLine($"[END  ] {idx}:{item.Key}");
             })).Wait();
 
             var count = _database.Count(_tableName);
-            Console.WriteLine($"\n*** Completed to get logs.\nLog count is {count}.\nLogs was stored in '{_tableName}' table.");
+            Console.WriteLine($"\n*** Completed to get logs.\n Log record count is {count}.\n Logs was stored in '{_tableName}' table.");
         }
 
         public async Task ExecuteItem(S3Object item)
