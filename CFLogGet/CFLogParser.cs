@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,11 +27,15 @@ namespace CFLogGet
 
                 foreach (var prop in model.GetType().GetProperties().Where(p => p.CanWrite))
                 {
-                    var column = prop.GetCustomAttributes(typeof(ColumnAttribute), false).FirstOrDefault() as ColumnAttribute;
+                    var column = GetAttribute<ColumnAttribute>(prop);
                     if (column == null) continue;
 
                     var value = values[column.Order];
                     if (string.IsNullOrEmpty(value) || value == "-") continue;
+
+                    var stringLength = GetAttribute<StringLengthAttribute>(prop);
+                    if (stringLength != null && stringLength.MaximumLength < value.Length)
+                        value = value.Substring(0, stringLength.MaximumLength - 3) + "...";
 
                     if (prop.PropertyType == typeof(int?))
                         prop.SetValue(model, int.Parse(value));
@@ -41,5 +47,8 @@ namespace CFLogGet
             }
             return list;
         }
+
+        private TAttribute GetAttribute<TAttribute>(PropertyInfo prop) where TAttribute : class
+            => prop.GetCustomAttributes(typeof(TAttribute), false).FirstOrDefault() as TAttribute;
     }
 }

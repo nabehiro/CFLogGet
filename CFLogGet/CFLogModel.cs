@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
@@ -28,6 +29,8 @@ namespace CFLogGet
         public string cs_method { get; set; }
         [Column(Order = 6, TypeName = "nvarchar(50)")]
         public string cs_host { get; set; }
+        // if StringLength attribute is specified, truncate string by maximum length.
+        [StringLength(450)]
         [Column(Order = 7, TypeName = "nvarchar(450)")]
         public string cs_uri_stem { get; set; }
         [Column(Order = 8, TypeName = "int")]

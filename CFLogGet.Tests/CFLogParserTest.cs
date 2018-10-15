@@ -13,7 +13,7 @@ namespace CFLogGet.Tests
         public void TestMethod1()
         {
             var parser = new CFLogParser();
-            var models = parser.Parse(@"C:\Users\nabehiro\dev\CFLogGet\CFLogGet\bin\Debug\temp\logfile.log");
+            var models = parser.Parse(@"C:\tools\cflogget\temp\commerble-corp\logfile.log");
             
             foreach (var p in typeof(CFLogModel).GetProperties())
             {
@@ -22,13 +22,18 @@ namespace CFLogGet.Tests
 
                 if (p.PropertyType != typeof(string)) continue;
 
-                var max = 0;
+                var maxValue = "";
+                var maxLength = 0;
                 foreach (var m in models)
                 {
                     var value = (string)p.GetValue(m) ?? "";
-                    max = Math.Max(max, value.Length);
+                    if (value.Length > maxLength)
+                    {
+                        maxLength = value.Length;
+                        maxValue = value;
+                    }
                 }
-                Console.WriteLine($"{p.Name}({column.TypeName}): {max}");
+                Console.WriteLine($"** {p.Name}({column.TypeName}): {maxLength}, {maxValue}\n");
             }
         }
     }
