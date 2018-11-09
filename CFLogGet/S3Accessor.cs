@@ -1,5 +1,6 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using Polly;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -74,15 +75,26 @@ namespace CFLogGet
                 Key = key
             };
 
-            using (var client = CreateClient())
-            {
-                using (var response = await client.GetObjectAsync(request))
+            var retryPolicy = Policy
+                .Handle<Exception>()
+                .WaitAndRetryAsync(6, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                (exception, timeSpan, retryAttempt, context) =>
                 {
-                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                    CancellationToken cancellationToken;
-                    await response.WriteResponseStreamToFileAsync(filePath, false, cancellationToken);
+                    Console.WriteLine($"*** [RETRY] Key={key}, FilePath={filePath}, RetryAttempt={retryAttempt}, TimeSpan={timeSpan}, Exception={exception}");
+                });
+
+            await retryPolicy.ExecuteAsync(async () =>
+            {
+                using (var client = CreateClient())
+                {
+                    using (var response = await client.GetObjectAsync(request))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                        CancellationToken cancellationToken;
+                        await response.WriteResponseStreamToFileAsync(filePath, false, cancellationToken);
+                    }
                 }
-            }
+            });
         }
 
         public async Task Decompress(string srcPath, string dstPath)

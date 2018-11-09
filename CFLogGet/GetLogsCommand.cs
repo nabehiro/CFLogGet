@@ -40,6 +40,7 @@ namespace CFLogGet
 
         public override void Execute()
         {
+            var sw = Stopwatch.StartNew();
             var connectionString = ConfigurationManager.ConnectionStrings["default"]?.ConnectionString;
             if (string.IsNullOrEmpty(connectionString))
                 throw new ApplicationException("ConnectionString must be required in configuration file.");
@@ -64,14 +65,46 @@ namespace CFLogGet
             _tableName = $"{RootDirectory.Replace('-', '_').Replace('/', '_')}_{DateTime.Now:MMdd_HHmm}";
             _database.CreateTable(_tableName);
 
-            Task.WhenAll(items.Select(async (item, idx) =>
-            {
-                Console.WriteLine($"{idx}:{item.Key}");
-                await ExecuteItem(item);
-            })).Wait();
+            //ExecuteWhenAll(items);
+            ExecuteParallel(items);
 
             var count = _database.Count(_tableName);
-            Console.WriteLine($"\n*** Completed to get logs.\n Log record count is {count}.\n Logs was stored in '{_tableName}' table.");
+            Console.WriteLine($"\n*** Completed to get logs.\n Log record count is {count}.\n Logs was stored in '{_tableName}' table.\n Elapsed: {sw.Elapsed}");
+        }
+
+        private void ExecuteWhenAll(IEnumerable<S3Object> items)
+        {
+            Task.WhenAll(items.Select(async (item, idx) =>
+            {
+                var sw = Stopwatch.StartNew();
+                try
+                {
+                    await ExecuteItem(item);
+                }
+                finally
+                {
+                    Console.WriteLine($"{idx}:{item.Key} (Elapsed:{sw.Elapsed})");
+                }
+            })).Wait();
+        }
+
+        private void ExecuteParallel(IEnumerable<S3Object> items)
+        {
+            var options = new ParallelOptions { MaxDegreeOfParallelism = 64 };
+            var indexItems = items.Select((i, idx) => new { Item = i, Index = idx });
+
+            Parallel.ForEach(indexItems, options, i =>
+            {
+                var sw = Stopwatch.StartNew();
+                try
+                {
+                    ExecuteItem(i.Item).Wait();
+                }
+                finally
+                {
+                    Console.WriteLine($"{i.Index}:{i.Item.Key} (Elapsed:{sw.Elapsed})");
+                }
+            });
         }
 
         public async Task ExecuteItem(S3Object item)
